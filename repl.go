@@ -9,6 +9,7 @@ import (
 
 func startREPL() {
 	scanner := bufio.NewScanner(os.Stdin)
+	cfg := &config{}
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -21,7 +22,7 @@ func startREPL() {
 			commandName := cleanedInput[0]
 			cmd, exists := getCommands()[commandName]
 			if exists {
-				err := cmd.callback()
+				err := cmd.callback(cfg)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -42,7 +43,7 @@ func startREPL() {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 func cleanInput(text string) []string {
