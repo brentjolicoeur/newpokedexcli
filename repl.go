@@ -3,14 +3,19 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"newpokedexcli/internal/pokeapi"
 	"os"
 	"strings"
 )
 
-func startREPL() {
-	scanner := bufio.NewScanner(os.Stdin)
-	cfg := &config{}
+type config struct {
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
+}
 
+func startRepl(cfg *config) {
+	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
 		if scanner.Scan() {
@@ -66,12 +71,12 @@ func getCommands() map[string]cliCommand {
 		},
 		"map": {
 			name:        "map",
-			description: "Displays next 20 locations in the Pokemon world",
+			description: "Get the next page of locations",
 			callback:    commandMap,
 		},
 		"mapb": {
 			name:        "mapb",
-			description: "Displays previous 20 locations in the Pokemon world",
+			description: "Get the previous page of locations",
 			callback:    commandMapBack,
 		},
 	}

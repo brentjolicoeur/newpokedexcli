@@ -1,10 +1,14 @@
 package main
 
-type config struct {
-	next     *string
-	previous *string
-}
+import (
+	"newpokedexcli/internal/pokeapi"
+	"time"
+)
 
 func main() {
-	startREPL()
+	pokeClient := pokeapi.NewClient(5 * time.Second)
+	cfg := &config{
+		pokeapiClient: pokeClient,
+	}
+	startRepl(cfg)
 }

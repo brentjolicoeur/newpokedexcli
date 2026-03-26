@@ -1,32 +1,25 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
-	"net/http"
 )
 
 func commandMapBack(cfg *config) error {
-	if cfg.previous == nil || *cfg.previous == "" {
-		fmt.Println("You're on the first page.")
-		return nil
+	if cfg.prevLocationsURL == nil {
+		return errors.New("you're on the first page")
 	}
 
-	res, err := http.Get(*cfg.previous)
+	locationResp, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsURL)
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
 
-	var locations LocationAreaResponse
-	if err := json.NewDecoder(res.Body).Decode(&locations); err != nil {
-		return err
+	cfg.nextLocationsURL = locationResp.Next
+	cfg.prevLocationsURL = locationResp.Previous
+
+	for _, loc := range locationResp.Results {
+		fmt.Println(loc.Name)
 	}
-	cfg.next, cfg.previous = &locations.Next, &locations.Previous
-
-	for _, location := range locations.Results {
-		fmt.Println(location.Name)
-	}
-
 	return nil
 }
