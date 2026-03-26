@@ -1,0 +1,62 @@
+package main
+
+import (
+	"testing"
+)
+
+func TestCleanInput(t *testing.T) {
+	cases := []struct {
+		input    string
+		expected []string
+	}{
+		{
+			input:    "  hello world  ",
+			expected: []string{"hello", "world"},
+		},
+		{
+			input:    "Test number two ",
+			expected: []string{"test", "number", "two"},
+		},
+		{
+			input:    "  TesTing CapitaliZation  AlsO",
+			expected: []string{"testing", "capitalization", "also"},
+		},
+		{
+			input:    "",
+			expected: []string{},
+		},
+		{
+			input:    "   ",
+			expected: []string{},
+		},
+		{
+			input:    "singleword",
+			expected: []string{"singleword"},
+		},
+		{
+			input:    "  multiple    spaces   between    words  ",
+			expected: []string{"multiple", "spaces", "between", "words"},
+		},
+		{
+			input:    "ALLCAPS",
+			expected: []string{"allcaps"},
+		},
+	}
+
+	for _, c := range cases {
+		actual := cleanInput(c.input)
+		if len(actual) != len(c.expected) {
+			t.Errorf("Expected length %d, but got %d for input: %v",
+				len(c.expected), len(actual), c.input)
+		}
+		for i := range actual {
+			word := actual[i]
+			expectedWord := c.expected[i]
+
+			if word != expectedWord {
+				t.Errorf("Expected word: %s, Actual word: %s",
+					c.expected[i], actual[i])
+			}
+		}
+	}
+}
