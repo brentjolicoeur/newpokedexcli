@@ -36,9 +36,26 @@ func (c *Cache) Add(key string, val []byte) {
 }
 
 func (c *Cache) Get(key string) ([]byte, bool) {
-	return nil, false
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	entry, ok := c.data[key]
+	if !ok {
+		return nil, ok
+	}
+	return entry.val, ok
 }
 
 func (c *Cache) reapLoop() {
+	ticker := time.NewTicker(c.interval)
 
+	for range ticker.C {
+		c.mu.Lock()
+		for key, val := range c.data {
+			if time.Since(val.createdAt) > c.interval {
+				delete(c.data, key)
+			}
+		}
+		c.mu.Unlock()
+	}
 }
