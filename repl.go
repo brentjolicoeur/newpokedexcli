@@ -80,5 +80,10 @@ func getCommands() map[string]cliCommand {
 			description: "Get the previous page of locations",
 			callback:    commandMapBack,
 		},
+		"explore": {
+			name:        "explore",
+			description: "List the pokemon found in a location area",
+			callback:    commandExplore,
+		},
 	}
 }
