@@ -19,13 +19,12 @@ func commandCatch(cfg *config, args []string) error {
 		return err
 	}
 
-	difficulty := float64(pokemon.BaseExperience) / 600.0
-	catchChance := float64(1.0 - difficulty)
+	catchChance := 1.0 - float64(pokemon.BaseExperience)/600.0
 
 	if catchChance < 0.02 {
 		catchChance = 0.02
 	}
-	if catchChance > rand.ExpFloat64() {
+	if catchChance > rand.Float64() {
 		fmt.Printf("%s was caught!\n", pokemon.Name)
 		cfg.caughtPokemon[name] = pokemon
 	} else {
