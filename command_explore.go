@@ -11,9 +11,8 @@ func commandExplore(cfg *config, args []string) error {
 	}
 	location := args[0]
 	fmt.Printf("Exploring %s\n", location)
-	url := "https://pokeapi.co/api/v2/location-area/" + location
 
-	areaInfo, err := cfg.pokeapiClient.ListAreaInfo(url)
+	areaInfo, err := cfg.pokeapiClient.ListAreaInfo(location)
 	if err != nil {
 		return err
 	}

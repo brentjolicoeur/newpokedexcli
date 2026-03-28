@@ -6,36 +6,36 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListAreaInfo(pageURL string) (LocationArea, error) {
+func (c *Client) ListPokemonInfo(name string) (Pokemon, error) {
+	url := baseURL + "/pokemon/" + name
+	var pokemon Pokemon
 
-	var locations LocationArea
-
-	if data, ok := c.cache.Get(pageURL); ok {
-		if err := json.Unmarshal(data, &locations); err != nil {
-			return LocationArea{}, err
+	if data, ok := c.cache.Get(url); ok {
+		if err := json.Unmarshal(data, &pokemon); err != nil {
+			return Pokemon{}, err
 		}
-		return locations, nil
+		return pokemon, nil
 	}
 
-	req, err := http.NewRequest("GET", pageURL, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return LocationArea{}, err
+		return Pokemon{}, err
 	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return LocationArea{}, err
+		return Pokemon{}, err
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return LocationArea{}, err
+		return Pokemon{}, err
 	}
-	if err = json.Unmarshal(body, &locations); err != nil {
-		return LocationArea{}, err
+	if err = json.Unmarshal(body, &pokemon); err != nil {
+		return Pokemon{}, err
 	}
-	c.cache.Add(pageURL, body)
+	c.cache.Add(url, body)
 
-	return locations, nil
+	return pokemon, nil
 }
